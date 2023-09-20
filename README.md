@@ -17,3 +17,5 @@ Identificação de clientes com maior probabilidade de churn.
 Flexibilidade para adaptação a diferentes formatos de dados.
 
 Autor do projeto: Leontino Queiroz
+
+Onde encontrar o projeto: https://antichurnleon.streamlit.app/
