@@ -1,6 +1,7 @@
 def classificadores(x,y):
     # Importações
     import pickle
+    import os
     from sklearn.model_selection import train_test_split
     from sklearn.preprocessing import StandardScaler
     from sklearn.neighbors import KNeighborsClassifier
@@ -8,6 +9,22 @@ def classificadores(x,y):
     from sklearn.naive_bayes import BernoulliNB
     from sklearn.tree import DecisionTreeClassifier
     from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+    # Carregando modelos
+    knn_file = 'classificadores/knn.pkl'
+    bnb_file = 'classificadores/bnb.pkl'
+    dtc_file = 'classificadores/dtc.pkl'
+    knn = None
+    bnb = None
+    dtc = None
+    if os.path.isfile(knn_file):
+        with open(knn_file, 'rb') as f:
+            knn = pickle.load(f)
+    if os.path.isfile(bnb_file):
+        with open(bnb_file, 'rb') as f:
+            bnb = pickle.load(f)
+    if os.path.isfile(dtc_file):
+        with open(dtc_file, 'rb') as f:
+            dtc = pickle.load(f)
     # Dados
     norm = StandardScaler()
     X_normalizado = norm.fit_transform(x)
@@ -15,12 +32,13 @@ def classificadores(x,y):
 
     #KNN
     param_grid = {'n_neighbors': range(1, 30)}
-    knn = KNeighborsClassifier()
-    grid_search = GridSearchCV(knn, param_grid, cv=5)
-    grid_search.fit(X_normalizado, y)
-    melhor_vizinhos = grid_search.best_params_['n_neighbors']
-    knn = KNeighborsClassifier(metric='euclidean', n_neighbors=melhor_vizinhos)
-    knn.fit(X_treino, y_treino)
+    if knn is None:
+        knn = KNeighborsClassifier()
+        grid_search = GridSearchCV(knn, param_grid, cv=5)
+        grid_search.fit(X_normalizado, y)
+        melhor_vizinhos = grid_search.best_params_['n_neighbors']
+        knn = KNeighborsClassifier(metric='euclidean', n_neighbors=melhor_vizinhos)
+        knn.fit(X_treino, y_treino)
     knn_y_pred = knn.predict(X_teste)
     knn_y_prob = knn.predict_proba(x)
     knn_accuracy = accuracy_score(y_teste, knn_y_pred)
@@ -34,12 +52,13 @@ def classificadores(x,y):
     F1-Score: {round(knn_f1*100,2)}%"""
     #BerdolinniNB
     param_grid = {'alpha': [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]}
-    bnb = BernoulliNB()
-    grid_search = GridSearchCV(bnb, param_grid, cv=5)
-    grid_search.fit(X_treino, y_treino)
-    best_alpha = grid_search.best_params_['alpha']
-    bnb = BernoulliNB(alpha=best_alpha)
-    bnb.fit(X_treino, y_treino)
+    if bnb is None:
+        bnb = BernoulliNB()
+        grid_search = GridSearchCV(bnb, param_grid, cv=5)
+        grid_search.fit(X_treino, y_treino)
+        best_alpha = grid_search.best_params_['alpha']
+        bnb = BernoulliNB(alpha=best_alpha)
+        bnb.fit(X_treino, y_treino)
     bnb_y_pred = bnb.predict(X_teste)
     bnb_y_prob = bnb.predict_proba(x)
     bnb_accuracy = accuracy_score(y_teste, bnb_y_pred)
@@ -53,12 +72,13 @@ def classificadores(x,y):
     F1-Score: {round(bnb_f1*100,2)}%"""
     #DecisionTreeClassifier
     param_grid = {'max_depth': range(1, 10)}
-    dtc = DecisionTreeClassifier()
-    grid_search = GridSearchCV(dtc, param_grid, cv=5)
-    grid_search.fit(X_treino, y_treino)
-    best_max_depth = grid_search.best_params_['max_depth']
-    dtc = DecisionTreeClassifier(max_depth=best_max_depth)
-    dtc.fit(X_treino, y_treino)
+    if dtc is None:
+        dtc = DecisionTreeClassifier()
+        grid_search = GridSearchCV(dtc, param_grid, cv=5)
+        grid_search.fit(X_treino, y_treino)
+        best_max_depth = grid_search.best_params_['max_depth']
+        dtc = DecisionTreeClassifier(max_depth=best_max_depth)
+        dtc.fit(X_treino, y_treino)
     dtc_y_pred = dtc.predict(X_teste)
     dtc_y_prob = dtc.predict_proba(x)
     dtc_accuracy = accuracy_score(y_teste, dtc_y_pred)
