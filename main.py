@@ -132,7 +132,8 @@ st.markdown(f"""
         }}
     </style>
     <h1 class="titulo">Novexus AntiChurn</h1>
-    <p>Bem vindo ao sistema de prevenção de Churn da Novexus, importe ou cole a url dos dados em Json, no formato padrão para que o sistema analise os dados e classifique os clientes para você iniciar as tratativas de prevenção</p>""",unsafe_allow_html=True)
+    <p>Bem vindo ao sistema de prevenção de Churn da Novexus, importe ou cole a url dos dados em Json, no formato padrão para que o sistema analise os dados e classifique os clientes para você iniciar as tratativas de prevenção</p>
+    <p>URL dos dados: https://challenge-data-science-3ed.s3.amazonaws.com/Telco-Customer-Churn.json</p>""",unsafe_allow_html=True)
 st.divider()
 def main():
     campo1 = st.empty()
